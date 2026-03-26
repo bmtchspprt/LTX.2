@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Wiring Guide</title>
+    <title>LTX-100 Technical Guide</title>
     <style>
         body {
-            background-color: #1a1a1a; /* Your site background */
+            background-color: #1a1a1a;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding-top: 50px;
             margin: 0;
+            font-family: sans-serif;
         }
 
         .board-container {
             position: relative;
-            width: 1000px; /* Adjust based on your needs */
+            width: 900px; /* This controls the size on your screen */
         }
 
         .base-image {
@@ -23,13 +23,11 @@
             display: block;
         }
 
-        /* This is where we will later "overlay" wires and digital panels */
-        .overlay-layer {
+        /* Use this class for any text or wires you want to 'float' over the board */
+        .overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            color: cyan;
+            font-weight: bold;
             pointer-events: none;
         }
     </style>
@@ -39,7 +37,9 @@
     <div class="board-container">
         <img src="ltx-100-base.png" alt="LTX-100 Board" class="base-image">
         
-        <div class="overlay-layer" id="interactivity"></div>
+        <div class="overlay" style="top: 75%; left: 12%;">
+            Connect 24V DC Here
+        </div>
     </div>
 
 </body>
