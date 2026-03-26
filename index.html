@@ -2,45 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Technical Guide</title>
+    <title>LTX-100 Support Interface</title>
     <style>
-        body {
-            background-color: #1a1a1a;
+        body { 
+            background-color: #121212; 
+            color: white; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding: 40px; 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+
+        /* The Board Container */
+        .board-container { 
+            position: relative; 
+            width: 1000px; /* Adjust this to scale the whole board */
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+        }
+
+        .base-img { 
+            width: 100%; 
+            display: block; 
+        }
+
+        /* DIGITAL PANEL OVERLAY */
+        .digital-overlay {
+            position: absolute;
+            top: 18.8%; /* Precisely over the 7-segment area */
+            left: 20.3%;
+            width: 13.2%;
+            height: 10.5%;
+            background: #0a0a0a;
             display: flex;
             justify-content: center;
-            padding-top: 50px;
-            margin: 0;
-            font-family: sans-serif;
+            align-items: center;
+            border-radius: 2px;
+            box-shadow: inset 0 0 10px #000;
         }
 
-        .board-container {
-            position: relative;
-            width: 900px; /* This controls the size on your screen */
-        }
-
-        .base-image {
-            width: 100%;
-            display: block;
-        }
-
-        /* Use this class for any text or wires you want to 'float' over the board */
-        .overlay {
-            position: absolute;
-            color: cyan;
+        .led-digits {
+            color: #ff3333;
+            font-family: monospace;
+            font-size: 48px;
             font-weight: bold;
+            text-shadow: 0 0 12px #ff0000;
+            letter-spacing: 4px;
+        }
+
+        /* INSTRUCTION LABELS */
+        .callout {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.6);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #000;
+            pointer-events: auto;
+            transition: transform 0.2s;
+        }
+
+        .callout:hover {
+            transform: scale(1.05);
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        /* WIRE OVERLAY (SVG layer) */
+        .wire-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
     </style>
 </head>
 <body>
 
+    <h2 style="margin-bottom: 30px; color: #aaa;">LTX-100 Wiring & Configuration</h2>
+
     <div class="board-container">
-        <img src="ltx-100-base.png" alt="LTX-100 Board" class="base-image">
-        
-        <div class="overlay" style="top: 75%; left: 12%;">
-            Connect 24V DC Here
+        <img src="ltx-100-base.png" alt="LTX-100 Hardware" class="base-img">
+
+        <div class="digital-overlay">
+            <div class="led-digits" id="main-display">888</div>
         </div>
+
+        <div class="callout" style="top: 80%; left: 10%;">
+            &larr; 24V DC POWER INPUT
+        </div>
+
+        <div class="callout" style="top: 61%; left: 24.5%;">
+            &uarr; RS-485 1 (B- / A+)
+        </div>
+
+        <div class="callout" style="top: 52%; left: 51%;">
+            &uarr; SIM SLOT (4G/LTE)
+        </div>
+
+        <svg class="wire-layer" viewBox="0 0 1000 500">
+            </svg>
     </div>
+
+    <script>
+        // Simple logic to simulate the display booting up
+        setTimeout(() => {
+            document.getElementById('main-display').innerText = '1.0.0';
+        }, 1500);
+    </script>
 
 </body>
 </html>
