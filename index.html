@@ -2,90 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Element Mapper</title>
+    <title>LTX-100 Precision Map</title>
     <style>
         body { 
-            background-color: #121212; 
+            background: #0f0f0f;
             display: flex; 
-            flex-direction: column;
+            justify-content: center; 
             align-items: center; 
-            padding: 40px; 
+            height: 100vh;
             margin: 0; 
-            font-family: 'Courier New', monospace; 
+            font-family: sans-serif;
+            overflow: hidden;
         }
 
-        .controls { margin-bottom: 20px; }
-        
-        button {
+        .header {
+            position: fixed;
+            top: 20px;
+            background: rgba(0,0,0,0.8);
+            color: #00ffff;
             padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        button {
             background: #00ffff;
             border: none;
+            color: #0f0f0f;
+            padding: 8px 16px;
             border-radius: 4px;
-            cursor: pointer;
             font-weight: bold;
-            color: #121212;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
         .board-container { 
             position: relative; 
-            width: 1000px; 
-            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+            width: 100%; 
+            height: 100%;
+            background-image: url('https://i.imgur.com/G4V8zF4.png'); /* image_33.png reference */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-        .base-img { width: 100%; display: block; }
-
-        /* Component Box Styles */
-        .element-box {
+        /* The SVG map layer */
+        #map-overlay {
+            width: 100%;
+            height: 100%;
             position: absolute;
-            border: 1.5px solid #00ffff;
-            background: rgba(0, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00ffff;
-            font-weight: bold;
-            font-size: 14px;
-            pointer-events: auto;
-            transition: background 0.2s;
+            top: 0;
+            left: 0;
             display: none; /* Toggleable */
         }
 
-        .element-box:hover {
-            background: rgba(0, 255, 255, 0.3);
+        .map-item {
+            fill: rgba(0, 255, 255, 0.0); /* Transparent by default */
+            stroke: #00ffff;
+            stroke-width: 0.2px;
+            transition: fill 0.2s, stroke 0.2s;
+            cursor: pointer;
         }
 
-        /* Logic for showing/hiding */
-        .show-boxes .element-box { display: flex; }
+        .map-item:hover {
+            fill: rgba(0, 255, 255, 0.2);
+            stroke-width: 0.4px;
+        }
+
+        .label-text {
+            fill: #00ffff;
+            font-size: 1px; /* Scaled to SVG space */
+            font-weight: bold;
+            display: none; /* Tooltip style */
+            pointer-events: none;
+        }
+
+        /* Hover behavior to show name */
+        .map-item:hover + .label-text {
+            display: block;
+        }
+
+        .show-map #map-overlay { display: block; }
     </style>
 </head>
-<body>
+<body class="show-map">
 
-    <div class="controls">
-        <button onclick="document.body.classList.toggle('show-boxes')">Toggle Element Boxes</button>
+    <div class="header">
+        <button onclick="document.body.classList.toggle('show-map')">Toggle Precision Map</button>
     </div>
 
     <div class="board-container">
-        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
+        <svg id="map-overlay" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            
+            <rect x="20.1" y="18.8" width="13.2" height="10.5" class="map-item" />
+            <text x="26.7" y="24" class="label-text" text-anchor="middle">G1 (Display)</text>
 
-        <div class="element-box" style="top: 18%; left: 20%; width: 14%; height: 11%;">G1</div>
+            <rect x="34.8" y="18.8" width="10.8" height="10.5" class="map-item" />
+            <text x="40.2" y="24" class="label-text" text-anchor="middle">G2 (Buttons)</text>
 
-        <div class="element-box" style="top: 18%; left: 34.5%; width: 11%; height: 11%;">G2</div>
+            <rect x="12.3" y="40.2" width="8.3" height="14.8" class="map-item" />
+            <text x="16.5" y="47" class="label-text" text-anchor="middle">G3 (DC Power)</text>
 
-        <div class="element-box" style="top: 40%; left: 12%; width: 9%; height: 15%;">G3</div>
+            <rect x="21.8" y="40.2" width="10.4" height="14.8" class="map-item" />
+            <text x="27" y="47" class="label-text" text-anchor="middle">G4 (RS-485 1)</text>
 
-        <div class="element-box" style="top: 40%; left: 21.5%; width: 11%; height: 15%;">G4</div>
+            <rect x="33.4" y="40.2" width="10.4" height="14.8" class="map-item" />
+            <text x="38.6" y="47" class="label-text" text-anchor="middle">G5 (RS-485 2)</text>
 
-        <div class="element-box" style="top: 40%; left: 33%; width: 11%; height: 15%;">G5</div>
+            <rect x="45.1" y="18.8" width="17.7" height="44.2" class="map-item" />
+            <text x="54" y="40" class="label-text" text-anchor="middle">G6 (Exp 1)</text>
 
-        <div class="element-box" style="top: 18%; left: 45%; width: 18%; height: 45%;">G6</div>
+            <rect x="63.7" y="18.8" width="17.7" height="44.2" class="map-item" />
+            <text x="72.5" y="40" class="label-text" text-anchor="middle">G7 (Exp 2)</text>
 
-        <div class="element-box" style="top: 18%; left: 63.5%; width: 18%; height: 45%;">G7</div>
+            <rect x="52.2" y="50" width="4.7" height="10" class="map-item" />
+            <text x="54.5" y="55" class="label-text" text-anchor="middle">G8 (SIM)</text>
 
-        <div class="element-box" style="top: 50%; left: 52%; width: 5%; height: 10%;">G8</div>
+            <rect x="45.6" y="67" width="6.6" height="12.5" class="map-item" />
+            <text x="49" y="73" class="label-text" text-anchor="middle">G9 (Ethernet)</text>
 
-        <div class="element-box" style="top: 67%; left: 45.5%; width: 7%; height: 13%;">G9</div>
-
-        <div class="element-box" style="top: 42%; left: 81%; width: 5%; height: 25%;">G10</div>
+            <rect x="81.2" y="42" width="4.6" height="24" class="map-item" />
+            <text x="83.5" y="54" class="label-text" text-anchor="middle">G10 (Shield)</text>
+        </svg>
     </div>
 
 </body>
