@@ -21,7 +21,6 @@
             user-select: none;
         }
 
-        /* Changes cursor based on mode */
         .mode-edit .board-container { cursor: crosshair; }
         .mode-locked .board-container { cursor: default; }
 
@@ -36,7 +35,14 @@
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.05); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 10px; font-weight: bold; transition: background 0.2s;
+            font-size: 10px; font-weight: bold; transition: opacity 0.3s ease, background 0.2s;
+            opacity: 1;
+        }
+
+        /* Visibility Toggle Class */
+        .hide-boxes .finished-box {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .mode-locked .finished-box:hover {
@@ -51,6 +57,7 @@
 
         .btn-edit { background: #f39c12; color: white; }
         .btn-save { background: #27ae60; color: white; }
+        .btn-toggle { background: #3498db; color: white; }
         .btn-danger { background: #c0392b; color: white; }
         
         #status-indicator { font-size: 12px; margin-left: 20px; }
@@ -60,6 +67,7 @@
 
     <div class="header">
         <button id="editBtn" class="btn-edit" onclick="toggleMode()">Edit Layout</button>
+        <button class="btn-toggle" onclick="toggleVisibility()">Toggle Boxes On/Off</button>
         <button class="btn-danger" onclick="clearAll()">Clear All</button>
         <span id="status-indicator">STATUS: LOCKED</span>
     </div>
@@ -67,7 +75,7 @@
     <div class="board-container" id="canvas">
         <img src="ltx-100-base.png" class="base-img">
         <div id="active-box"></div>
-        </div>
+    </div>
 
     <script>
         const canvas = document.getElementById('canvas');
@@ -78,15 +86,21 @@
         let isEditing = false;
         let startX, startY, isDrawing = false;
 
-        // Load boxes from LocalStorage on boot
         window.onload = loadBoxes;
+
+        function toggleVisibility() {
+            canvas.classList.toggle('hide-boxes');
+        }
 
         function toggleMode() {
             isEditing = !isEditing;
             document.body.className = isEditing ? "mode-edit" : "mode-locked";
-            status.innerText = isEditing ? "STATUS: EDITING (Click/Drag to Draw)" : "STATUS: LOCKED";
+            status.innerText = isEditing ? "STATUS: EDITING" : "STATUS: LOCKED";
             editBtn.innerText = isEditing ? "Finish & Lock" : "Edit Layout";
             editBtn.className = isEditing ? "btn-save" : "btn-edit";
+            
+            // Auto-show boxes if entering edit mode
+            if (isEditing) canvas.classList.remove('hide-boxes');
         }
 
         canvas.addEventListener('mousedown', e => {
