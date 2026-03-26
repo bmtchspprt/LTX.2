@@ -37,9 +37,10 @@
         }
 
         button {
-            padding: 10px 20px; background: #00ffff; border: none; 
+            padding: 10px 25px; background: #00ffff; border: none; 
             cursor: pointer; font-weight: bold; border-radius: 3px;
             text-transform: uppercase; color: #1a1a1a;
+            font-size: 14px;
         }
 
         button:hover { background: #00cccc; }
@@ -48,7 +49,7 @@
 <body>
 
     <div class="header">
-        <button onclick="document.body.classList.toggle('show-grid')">Show Grid</button>
+        <button id="toggleBtn" onclick="toggleGrid()">Show Grid</button>
     </div>
 
     <div class="board-container" id="canvas">
@@ -59,7 +60,15 @@
         <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
         <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
         <div class="finished-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">G3.3</div>
-        </div>
+    </div>
+
+    <script>
+        function toggleGrid() {
+            const isShown = document.body.classList.toggle('show-grid');
+            const btn = document.getElementById('toggleBtn');
+            btn.innerText = isShown ? "Hide Grid" : "Show Grid";
+        }
+    </script>
 
 </body>
 </html>
