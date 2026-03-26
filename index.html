@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Interface</title>
+    <title>LTX-100 Box Creator</title>
     <style>
         body { 
             background: #0f0f0f; color: #00ffff;
@@ -11,71 +11,109 @@
         }
         .header {
             padding: 15px; background: #1a1a1a; width: 100%;
-            display: flex; justify-content: center;
+            display: flex; justify-content: center; gap: 20px;
             border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000;
         }
         .board-container { 
             position: relative; width: 1000px; margin: 20px 0;
-            user-select: none;
+            cursor: crosshair; user-select: none;
         }
         .base-img { width: 100%; display: block; pointer-events: none; }
+        #active-box {
+            position: absolute; border: 1.5px solid #00ffff;
+            background: rgba(0, 255, 255, 0.2); pointer-events: none; display: none;
+        }
         .finished-box {
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.1); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
             font-size: 12px; font-weight: bold;
-            visibility: hidden;
         }
-        .show-grid .finished-box { visibility: visible; }
+        .output-area {
+            width: 900px; background: #1a1a1a; padding: 20px;
+            border: 1px solid #333; margin-bottom: 40px; color: #aaa;
+        }
+        pre { background: #000; padding: 10px; color: #00ff00; overflow-x: auto; font-size: 12px; }
         button {
-            padding: 10px 25px; background: #00ffff; border: none; 
+            padding: 8px 15px; background: #c0392b; color: white; border: none; 
             cursor: pointer; font-weight: bold; border-radius: 3px;
-            text-transform: uppercase; color: #1a1a1a; font-size: 14px;
         }
-        button:hover { background: #00cccc; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <button id="toggleBtn" onclick="toggleGrid()">Show Precision Map</button>
+        <span style="font-weight:bold">MODE: DRAWING BOXES</span>
+        <button onclick="location.reload()">Reset & Start Over</button>
     </div>
 
     <div class="board-container" id="canvas">
-        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
-        
-        <div class="finished-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">1</div>
-        <div class="finished-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">2</div>
+        <img src="ltx-100-base.png" class="base-img">
+        <div id="active-box"></div>
+    </div>
 
-        <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">3</div>
-        <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">4</div>
-        <div class="finished-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">5</div>
-
-        <div class="finished-box" style="top: 40.2%; left: 21.8%; width: 2.1%; height: 14.8%;">6</div>
-        <div class="finished-box" style="top: 40.2%; left: 23.9%; width: 2.1%; height: 14.8%;">7</div>
-        <div class="finished-box" style="top: 40.2%; left: 26.0%; width: 2.1%; height: 14.8%;">8</div>
-        <div class="finished-box" style="top: 40.2%; left: 28.1%; width: 2.1%; height: 14.8%;">9</div>
-        <div class="finished-box" style="top: 40.2%; left: 30.2%; width: 2.1%; height: 14.8%;">10</div>
-
-        <div class="finished-box" style="top: 40.2%; left: 33.4%; width: 2.1%; height: 14.8%;">11</div>
-        <div class="finished-box" style="top: 40.2%; left: 35.5%; width: 2.1%; height: 14.8%;">12</div>
-        <div class="finished-box" style="top: 40.2%; left: 37.6%; width: 2.1%; height: 14.8%;">13</div>
-        <div class="finished-box" style="top: 40.2%; left: 39.7%; width: 2.1%; height: 14.8%;">14</div>
-        <div class="finished-box" style="top: 40.2%; left: 41.8%; width: 2.1%; height: 14.8%;">15</div>
-
-        <div class="finished-box" style="top: 18.8%; left: 45.1%; width: 17.7%; height: 44.2%;">16</div>
-        <div class="finished-box" style="top: 18.8%; left: 63.7%; width: 17.7%; height: 44.2%;">17</div>
-        <div class="finished-box" style="top: 50%; left: 52%; width: 5%; height: 10%;">18</div>
-        <div class="finished-box" style="top: 67%; left: 45.5%; width: 7%; height: 13%;">19</div>
-        <div class="finished-box" style="top: 42%; left: 81%; width: 5%; height: 25%;">20</div>
+    <div class="output-area">
+        <h3>Generated Coordinates:</h3>
+        <p>As you draw, copy these lines to save them:</p>
+        <pre id="code-output"></pre>
     </div>
 
     <script>
-        function toggleGrid() {
-            const isShown = document.body.classList.toggle('show-grid');
-            document.getElementById('toggleBtn').innerText = isShown ? "Hide Precision Map" : "Show Precision Map";
-        }
-    </script>
+        const canvas = document.getElementById('canvas');
+        const activeBox = document.getElementById('active-box');
+        const codeOutput = document.getElementById('code-output');
+        
+        let startX, startY, isDrawing = false;
+        let boxCount = 0;
 
+        canvas.addEventListener('mousedown', e => {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = ((e.clientX - rect.left) / rect.width) * 100;
+            startY = ((e.clientY - rect.top) / rect.height) * 100;
+            activeBox.style.display = 'block';
+            activeBox.style.left = startX + '%';
+            activeBox.style.top = startY + '%';
+            activeBox.style.width = '0%';
+            activeBox.style.height = '0%';
+        });
+
+        canvas.addEventListener('mousemove', e => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            let currentX = ((e.clientX - rect.left) / rect.width) * 100;
+            let currentY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            let left = currentX < startX ? currentX : startX;
+            let top = currentY < startY ? currentY : startY;
+            let width = Math.abs(currentX - startX);
+            let height = Math.abs(currentY - startY);
+
+            activeBox.style.left = left + '%';
+            activeBox.style.top = top + '%';
+            activeBox.style.width = width + '%';
+            activeBox.style.height = height + '%';
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDrawing) return;
+            isDrawing = false;
+            activeBox.style.display = 'none';
+            boxCount++;
+
+            const finalBox = document.createElement('div');
+            finalBox.className = 'finished-box';
+            finalBox.style.left = activeBox.style.left;
+            finalBox.style.top = activeBox.style.top;
+            finalBox.style.width = activeBox.style.width;
+            finalBox.style.height = activeBox.style.height;
+            finalBox.innerText = boxCount;
+            canvas.appendChild(finalBox);
+
+            // Update Code Output
+            const line = `<div class="finished-box" style="top: ${activeBox.style.top}; left: ${activeBox.style.left}; width: ${activeBox.style.width}; height: ${activeBox.style.height};">${boxCount}</div>\n`;
+            codeOutput.innerText += line;
+        });
+    </script>
 </body>
 </html>
