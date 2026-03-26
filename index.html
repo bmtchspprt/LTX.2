@@ -17,23 +17,28 @@
         .board-container { 
             position: relative; width: 1000px; margin: 20px 0;
             cursor: crosshair; user-select: none;
+            border: 1px solid #333;
         }
         .base-img { width: 100%; display: block; pointer-events: none; }
+        
+        /* This is the box you see while dragging */
         #active-box {
-            position: absolute; border: 1.5px solid #00ffff;
-            background: rgba(0, 255, 255, 0.2); pointer-events: none; display: none;
+            position: absolute; border: 2px solid #00ffff;
+            background: rgba(0, 255, 255, 0.3); pointer-events: none; display: none;
+            z-index: 10;
         }
+        
         .finished-box {
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.1); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; font-weight: bold;
+            font-size: 14px; font-weight: bold; z-index: 5;
         }
         .output-area {
             width: 900px; background: #1a1a1a; padding: 20px;
-            border: 1px solid #333; margin-bottom: 40px; color: #aaa;
+            border: 1px solid #333; margin-bottom: 40px;
         }
-        pre { background: #000; padding: 10px; color: #00ff00; overflow-x: auto; font-size: 12px; }
+        pre { background: #000; padding: 15px; color: #00ff00; overflow-x: auto; font-size: 13px; border: 1px solid #00ff00; }
         button {
             padding: 8px 15px; background: #c0392b; color: white; border: none; 
             cursor: pointer; font-weight: bold; border-radius: 3px;
@@ -43,8 +48,8 @@
 <body>
 
     <div class="header">
-        <span style="font-weight:bold">MODE: DRAWING BOXES</span>
-        <button onclick="location.reload()">Reset & Start Over</button>
+        <span style="font-weight:bold; color: #00ffff;">STEP 1: DRAW YOUR BOXES (1, 2, 3...)</span>
+        <button onclick="location.reload()">Clear & Restart</button>
     </div>
 
     <div class="board-container" id="canvas">
@@ -53,8 +58,7 @@
     </div>
 
     <div class="output-area">
-        <h3>Generated Coordinates:</h3>
-        <p>As you draw, copy these lines to save them:</p>
+        <h3 style="color: #00ffff;">Step 2: Copy these lines:</h3>
         <pre id="code-output"></pre>
     </div>
 
@@ -69,8 +73,10 @@
         canvas.addEventListener('mousedown', e => {
             isDrawing = true;
             const rect = canvas.getBoundingClientRect();
+            // Store starting position in percentages
             startX = ((e.clientX - rect.left) / rect.width) * 100;
             startY = ((e.clientY - rect.top) / rect.height) * 100;
+            
             activeBox.style.display = 'block';
             activeBox.style.left = startX + '%';
             activeBox.style.top = startY + '%';
@@ -84,8 +90,8 @@
             let currentX = ((e.clientX - rect.left) / rect.width) * 100;
             let currentY = ((e.clientY - rect.top) / rect.height) * 100;
 
-            let left = currentX < startX ? currentX : startX;
-            let top = currentY < startY ? currentY : startY;
+            let left = Math.min(currentX, startX);
+            let top = Math.min(currentY, startY);
             let width = Math.abs(currentX - startX);
             let height = Math.abs(currentY - startY);
 
@@ -98,21 +104,25 @@
         window.addEventListener('mouseup', () => {
             if (!isDrawing) return;
             isDrawing = false;
+            
+            // Only create a box if it actually has dimensions
+            if (parseFloat(activeBox.style.width) > 0.5) {
+                boxCount++;
+                const finalBox = document.createElement('div');
+                finalBox.className = 'finished-box';
+                finalBox.style.left = activeBox.style.left;
+                finalBox.style.top = activeBox.style.top;
+                finalBox.style.width = activeBox.style.width;
+                finalBox.style.height = activeBox.style.height;
+                finalBox.innerText = boxCount;
+                canvas.appendChild(finalBox);
+
+                // Add to the code list
+                const line = `<div class="finished-box" style="top: ${activeBox.style.top}; left: ${activeBox.style.left}; width: ${activeBox.style.width}; height: ${activeBox.style.height};">${boxCount}</div>\n`;
+                codeOutput.innerText += line;
+            }
+            
             activeBox.style.display = 'none';
-            boxCount++;
-
-            const finalBox = document.createElement('div');
-            finalBox.className = 'finished-box';
-            finalBox.style.left = activeBox.style.left;
-            finalBox.style.top = activeBox.style.top;
-            finalBox.style.width = activeBox.style.width;
-            finalBox.style.height = activeBox.style.height;
-            finalBox.innerText = boxCount;
-            canvas.appendChild(finalBox);
-
-            // Update Code Output
-            const line = `<div class="finished-box" style="top: ${activeBox.style.top}; left: ${activeBox.style.left}; width: ${activeBox.style.width}; height: ${activeBox.style.height};">${boxCount}</div>\n`;
-            codeOutput.innerText += line;
         });
     </script>
 </body>
