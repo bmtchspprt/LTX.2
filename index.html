@@ -9,46 +9,36 @@
             display: flex; flex-direction: column; align-items: center; 
             margin: 0; font-family: 'Courier New', monospace;
         }
-
         .header {
             padding: 15px; background: #1a1a1a; width: 100%;
             display: flex; justify-content: center;
             border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000;
         }
-
         .board-container { 
             position: relative; width: 1000px; margin: 20px 0;
             user-select: none;
         }
-
         .base-img { width: 100%; display: block; pointer-events: none; }
-
         .finished-box {
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.1); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 10px; font-weight: bold;
+            font-size: 9px; font-weight: bold;
             visibility: hidden;
         }
-
-        .show-grid .finished-box {
-            visibility: visible;
-        }
-
+        .show-grid .finished-box { visibility: visible; }
         button {
             padding: 10px 25px; background: #00ffff; border: none; 
             cursor: pointer; font-weight: bold; border-radius: 3px;
-            text-transform: uppercase; color: #1a1a1a;
-            font-size: 14px;
+            text-transform: uppercase; color: #1a1a1a; font-size: 14px;
         }
-
         button:hover { background: #00cccc; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <button id="toggleBtn" onclick="toggleGrid()">Show Grid</button>
+        <button id="toggleBtn" onclick="toggleGrid()">Show Precision Map</button>
     </div>
 
     <div class="board-container" id="canvas">
@@ -56,6 +46,9 @@
         
         <div class="finished-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">G1</div>
         <div class="finished-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">G2</div>
+        <div class="finished-box" style="top: 13%; left: 28%; width: 4%; height: 3%;">LED1</div>
+        <div class="finished-box" style="top: 13%; left: 32%; width: 4%; height: 3%;">LED2</div>
+        <div class="finished-box" style="top: 31%; left: 24%; width: 6%; height: 4%;">USB-C</div>
 
         <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
         <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
@@ -78,13 +71,15 @@
         <div class="finished-box" style="top: 50%; left: 52%; width: 5%; height: 10%;">G8</div>
         <div class="finished-box" style="top: 67%; left: 45.5%; width: 7%; height: 13%;">G9</div>
         <div class="finished-box" style="top: 42%; left: 81%; width: 5%; height: 25%;">G10</div>
+        <div class="finished-box" style="top: 75%; left: 15%; width: 8%; height: 8%;">PWR_IN</div>
+        <div class="finished-box" style="top: 85%; left: 48%; width: 4%; height: 6%;">SCRW1</div>
+        <div class="finished-box" style="top: 5%; left: 78%; width: 3%; height: 5%;">ANT1</div>
     </div>
 
     <script>
         function toggleGrid() {
             const isShown = document.body.classList.toggle('show-grid');
-            const btn = document.getElementById('toggleBtn');
-            btn.innerText = isShown ? "Hide Grid" : "Show Grid";
+            document.getElementById('toggleBtn').innerText = isShown ? "Hide Precision Map" : "Show Precision Map";
         }
     </script>
 
