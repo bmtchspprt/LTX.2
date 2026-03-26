@@ -2,93 +2,125 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Individual Pin Mapper</title>
+    <title>LTX-100 Manual Box Creator</title>
     <style>
         body { 
-            background: #0f0f0f;
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            margin: 0; 
-            font-family: 'Courier New', monospace;
+            background: #0f0f0f; color: #00ffff;
+            display: flex; flex-direction: column; align-items: center; 
+            margin: 0; font-family: monospace;
         }
 
         .header {
-            padding: 15px;
-            background: #1a1a1a;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        button {
-            background: #00ffff;
-            border: none;
-            color: #0f0f0f;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
+            padding: 15px; background: #1a1a1a; width: 100%;
+            display: flex; justify-content: space-around; align-items: center;
+            border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000;
         }
 
         .board-container { 
-            position: relative; 
-            width: 1000px; 
-            margin: 40px 0;
+            position: relative; width: 1000px; margin: 20px 0;
+            cursor: crosshair; user-select: none;
         }
 
-        .base-img { width: 100%; display: block; }
+        .base-img { width: 100%; display: block; pointer-events: none; }
 
-        /* Component Box Styles */
-        .terminal-box {
-            position: absolute;
-            border: 0.5px solid #00ffff;
-            background: rgba(0, 255, 255, 0.1);
-            display: none; 
-            align-items: center;
-            justify-content: center;
-            color: #00ffff;
-            font-size: 8px;
-            font-weight: bold;
-            pointer-events: auto;
+        /* Styles for the box you are currently drawing */
+        #active-box {
+            position: absolute; border: 1.5px solid #00ffff;
+            background: rgba(0, 255, 255, 0.2); pointer-events: none; display: none;
         }
 
-        .terminal-box:hover { background: rgba(0, 255, 255, 0.4); }
-        .show-map .terminal-box { display: flex; }
+        /* Styles for finished boxes */
+        .finished-box {
+            position: absolute; border: 1px solid red;
+            background: rgba(255, 0, 0, 0.1); color: white;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+
+        #code-output {
+            width: 90%; max-width: 1000px; height: 150px;
+            background: #000; color: #0f0; padding: 10px;
+            border: 1px solid #333; overflow-y: scroll; margin-bottom: 40px;
+        }
     </style>
 </head>
-<body class="show-map">
+<body>
 
     <div class="header">
-        <button onclick="document.body.classList.toggle('show-map')">Toggle Pin Alignment</button>
+        <div><strong>CLICK & DRAG TO DRAW BOXES</strong></div>
+        <button onclick="clearBoxes()" style="background:#ff3333; border:none; padding:5px 10px; cursor:pointer;">Clear All</button>
     </div>
 
-    <div class="board-container">
-        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
-
-        <div class="terminal-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
-        <div class="terminal-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
-        <div class="terminal-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">G3.3</div>
-
-        <div class="terminal-box" style="top: 40.2%; left: 21.8%; width: 2.1%; height: 14.8%;">G4.1</div>
-        <div class="terminal-box" style="top: 40.2%; left: 23.9%; width: 2.1%; height: 14.8%;">G4.2</div>
-        <div class="terminal-box" style="top: 40.2%; left: 26.0%; width: 2.1%; height: 14.8%;">G4.3</div>
-        <div class="terminal-box" style="top: 40.2%; left: 28.1%; width: 2.1%; height: 14.8%;">G4.4</div>
-        <div class="terminal-box" style="top: 40.2%; left: 30.2%; width: 2.1%; height: 14.8%;">G4.5</div>
-
-        <div class="terminal-box" style="top: 40.2%; left: 33.4%; width: 2.1%; height: 14.8%;">G5.1</div>
-        <div class="terminal-box" style="top: 40.2%; left: 35.5%; width: 2.1%; height: 14.8%;">G5.2</div>
-        <div class="terminal-box" style="top: 40.2%; left: 37.6%; width: 2.1%; height: 14.8%;">G5.3</div>
-        <div class="terminal-box" style="top: 40.2%; left: 39.7%; width: 2.1%; height: 14.8%;">G5.4</div>
-        <div class="terminal-box" style="top: 40.2%; left: 41.8%; width: 2.1%; height: 14.8%;">G5.5</div>
-
-        <div class="terminal-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">G1</div>
-        <div class="terminal-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">G2</div>
+    <div class="board-container" id="canvas">
+        <img src="ltx-100-base.png" class="base-img">
+        <div id="active-box"></div>
     </div>
+
+    <div style="width: 1000px; text-align: left; margin-bottom: 5px;">Copy this code for your emulator:</div>
+    <textarea id="code-output" readonly placeholder="Your generated CSS will appear here..."></textarea>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const activeBox = document.getElementById('active-box');
+        const output = document.getElementById('code-output');
+        let startX, startY, isDrawing = false;
+        let boxCount = 1;
+
+        canvas.addEventListener('mousedown', e => {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = ((e.clientX - rect.left) / rect.width) * 100;
+            startY = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            activeBox.style.left = startX + '%';
+            activeBox.style.top = startY + '%';
+            activeBox.style.width = '0%';
+            activeBox.style.height = '0%';
+            activeBox.style.display = 'block';
+        });
+
+        canvas.addEventListener('mousemove', e => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            let currentX = ((e.clientX - rect.left) / rect.width) * 100;
+            let currentY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            let width = currentX - startX;
+            let height = currentY - startY;
+
+            activeBox.style.width = Math.abs(width) + '%';
+            activeBox.style.height = Math.abs(height) + '%';
+            activeBox.style.left = (width < 0 ? currentX : startX) + '%';
+            activeBox.style.top = (height < 0 ? currentY : startY) + '%';
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDrawing) return;
+            isDrawing = false;
+            
+            // Create a permanent visual box
+            const box = document.createElement('div');
+            box.className = 'finished-box';
+            box.style.left = activeBox.style.left;
+            box.style.top = activeBox.style.top;
+            box.style.width = activeBox.style.width;
+            box.style.height = activeBox.style.height;
+            box.innerText = 'G' + boxCount;
+            canvas.appendChild(box);
+
+            // Generate the code string
+            const codeLine = `<div class="terminal-box" style="top: ${activeBox.style.top}; left: ${activeBox.style.left}; width: ${activeBox.style.width}; height: ${activeBox.style.height};">G${boxCount}</div>\n`;
+            output.value += codeLine;
+
+            boxCount++;
+            activeBox.style.display = 'none';
+        });
+
+        function clearBoxes() {
+            document.querySelectorAll('.finished-box').forEach(el => el.remove());
+            output.value = "";
+            boxCount = 1;
+        }
+    </script>
 
 </body>
 </html>
