@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Precision Map</title>
+    <title>LTX-100 Terminal Mapper</title>
     <style>
         body { 
             background: #0f0f0f;
             display: flex; 
-            justify-content: center; 
+            flex-direction: column;
             align-items: center; 
-            height: 100vh;
             margin: 0; 
-            font-family: sans-serif;
-            overflow: hidden;
+            font-family: 'Courier New', monospace;
         }
 
         .header {
-            position: fixed;
-            top: 20px;
-            background: rgba(0,0,0,0.8);
-            color: #00ffff;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 20px;
+            background: #1a1a1a;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
             z-index: 1000;
         }
 
@@ -29,101 +29,65 @@
             background: #00ffff;
             border: none;
             color: #0f0f0f;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
         }
 
         .board-container { 
             position: relative; 
-            width: 100%; 
-            height: 100%;
-            background-image: url('https://i.imgur.com/G4V8zF4.png'); /* image_33.png reference */
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
+            width: 1000px; 
+            margin: 40px 0;
         }
 
-        /* The SVG map layer */
-        #map-overlay {
-            width: 100%;
-            height: 100%;
+        .base-img { width: 100%; display: block; }
+
+        /* Component Box Styles */
+        .terminal-box {
             position: absolute;
-            top: 0;
-            left: 0;
+            border: 1px solid #00ffff;
+            background: rgba(0, 255, 255, 0.1);
             display: none; /* Toggleable */
-        }
-
-        .map-item {
-            fill: rgba(0, 255, 255, 0.0); /* Transparent by default */
-            stroke: #00ffff;
-            stroke-width: 0.2px;
-            transition: fill 0.2s, stroke 0.2s;
-            cursor: pointer;
-        }
-
-        .map-item:hover {
-            fill: rgba(0, 255, 255, 0.2);
-            stroke-width: 0.4px;
-        }
-
-        .label-text {
-            fill: #00ffff;
-            font-size: 1px; /* Scaled to SVG space */
+            align-items: center;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 10px;
             font-weight: bold;
-            display: none; /* Tooltip style */
-            pointer-events: none;
+            pointer-events: auto;
         }
 
-        /* Hover behavior to show name */
-        .map-item:hover + .label-text {
-            display: block;
-        }
-
-        .show-map #map-overlay { display: block; }
+        .terminal-box:hover { background: rgba(0, 255, 255, 0.4); }
+        .show-map .terminal-box { display: flex; }
     </style>
 </head>
 <body class="show-map">
 
     <div class="header">
-        <button onclick="document.body.classList.toggle('show-map')">Toggle Precision Map</button>
+        <button onclick="document.body.classList.toggle('show-map')">Toggle Terminal Grid</button>
     </div>
 
     <div class="board-container">
-        <svg id="map-overlay" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-            
-            <rect x="20.1" y="18.8" width="13.2" height="10.5" class="map-item" />
-            <text x="26.7" y="24" class="label-text" text-anchor="middle">G1 (Display)</text>
+        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
 
-            <rect x="34.8" y="18.8" width="10.8" height="10.5" class="map-item" />
-            <text x="40.2" y="24" class="label-text" text-anchor="middle">G2 (Buttons)</text>
+        <div class="terminal-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
+        <div class="terminal-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
+        <div class="terminal-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">G3.3</div>
 
-            <rect x="12.3" y="40.2" width="8.3" height="14.8" class="map-item" />
-            <text x="16.5" y="47" class="label-text" text-anchor="middle">G3 (DC Power)</text>
+        <div class="terminal-box" style="top: 40.2%; left: 21.8%; width: 2.1%; height: 14.8%;">G4.1</div>
+        <div class="terminal-box" style="top: 40.2%; left: 23.9%; width: 2.1%; height: 14.8%;">G4.2</div>
+        <div class="terminal-box" style="top: 40.2%; left: 26.0%; width: 2.1%; height: 14.8%;">G4.3</div>
+        <div class="terminal-box" style="top: 40.2%; left: 28.1%; width: 2.1%; height: 14.8%;">G4.4</div>
+        <div class="terminal-box" style="top: 40.2%; left: 30.2%; width: 2.1%; height: 14.8%;">G4.5</div>
 
-            <rect x="21.8" y="40.2" width="10.4" height="14.8" class="map-item" />
-            <text x="27" y="47" class="label-text" text-anchor="middle">G4 (RS-485 1)</text>
+        <div class="terminal-box" style="top: 40.2%; left: 33.4%; width: 2.1%; height: 14.8%;">G5.1</div>
+        <div class="terminal-box" style="top: 40.2%; left: 35.5%; width: 2.1%; height: 14.8%;">G5.2</div>
+        <div class="terminal-box" style="top: 40.2%; left: 37.6%; width: 2.1%; height: 14.8%;">G5.3</div>
+        <div class="terminal-box" style="top: 40.2%; left: 39.7%; width: 2.1%; height: 14.8%;">G5.4</div>
+        <div class="terminal-box" style="top: 40.2%; left: 41.8%; width: 2.1%; height: 14.8%;">G5.5</div>
 
-            <rect x="33.4" y="40.2" width="10.4" height="14.8" class="map-item" />
-            <text x="38.6" y="47" class="label-text" text-anchor="middle">G5 (RS-485 2)</text>
-
-            <rect x="45.1" y="18.8" width="17.7" height="44.2" class="map-item" />
-            <text x="54" y="40" class="label-text" text-anchor="middle">G6 (Exp 1)</text>
-
-            <rect x="63.7" y="18.8" width="17.7" height="44.2" class="map-item" />
-            <text x="72.5" y="40" class="label-text" text-anchor="middle">G7 (Exp 2)</text>
-
-            <rect x="52.2" y="50" width="4.7" height="10" class="map-item" />
-            <text x="54.5" y="55" class="label-text" text-anchor="middle">G8 (SIM)</text>
-
-            <rect x="45.6" y="67" width="6.6" height="12.5" class="map-item" />
-            <text x="49" y="73" class="label-text" text-anchor="middle">G9 (Ethernet)</text>
-
-            <rect x="81.2" y="42" width="4.6" height="24" class="map-item" />
-            <text x="83.5" y="54" class="label-text" text-anchor="middle">G10 (Shield)</text>
-        </svg>
+        <div class="terminal-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">G1</div>
+        <div class="terminal-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">G2</div>
     </div>
 
 </body>
