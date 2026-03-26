@@ -23,7 +23,7 @@
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.1); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 9px; font-weight: bold;
+            font-size: 11px; font-weight: bold;
             visibility: hidden;
         }
         .show-grid .finished-box { visibility: visible; }
@@ -44,36 +44,35 @@
     <div class="board-container" id="canvas">
         <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
         
-        <div class="finished-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">G1</div>
-        <div class="finished-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">G2</div>
-        <div class="finished-box" style="top: 13%; left: 28%; width: 4%; height: 3%;">LED1</div>
-        <div class="finished-box" style="top: 13%; left: 32%; width: 4%; height: 3%;">LED2</div>
-        <div class="finished-box" style="top: 31%; left: 24%; width: 6%; height: 4%;">USB-C</div>
+        <div class="finished-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">1</div>
+        <div class="finished-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">2</div>
+        <div class="finished-box" style="top: 13%; left: 28%; width: 4%; height: 3%;">3</div>
+        <div class="finished-box" style="top: 13%; left: 32%; width: 4%; height: 3%;">4</div>
+        <div class="finished-box" style="top: 31%; left: 24%; width: 6%; height: 4%;">5</div>
 
-        <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
-        <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
-        <div class="finished-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">G3.3</div>
+        <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">6</div>
+        <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">7</div>
+        <div class="finished-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">8</div>
 
-        <div class="finished-box" style="top: 40.2%; left: 21.8%; width: 2.1%; height: 14.8%;">G4.1</div>
-        <div class="finished-box" style="top: 40.2%; left: 23.9%; width: 2.1%; height: 14.8%;">G4.2</div>
-        <div class="finished-box" style="top: 40.2%; left: 26.0%; width: 2.1%; height: 14.8%;">G4.3</div>
-        <div class="finished-box" style="top: 40.2%; left: 28.1%; width: 2.1%; height: 14.8%;">G4.4</div>
-        <div class="finished-box" style="top: 40.2%; left: 30.2%; width: 2.1%; height: 14.8%;">G4.5</div>
+        <div class="finished-box" style="top: 40.2%; left: 21.8%; width: 2.1%; height: 14.8%;">9</div>
+        <div class="finished-box" style="top: 40.2%; left: 23.9%; width: 2.1%; height: 14.8%;">10</div>
+        <div class="finished-box" style="top: 40.2%; left: 26.0%; width: 2.1%; height: 14.8%;">11</div>
+        <div class="finished-box" style="top: 40.2%; left: 28.1%; width: 2.1%; height: 14.8%;">12</div>
+        <div class="finished-box" style="top: 40.2%; left: 30.2%; width: 2.1%; height: 14.8%;">13</div>
 
-        <div class="finished-box" style="top: 40.2%; left: 33.4%; width: 2.1%; height: 14.8%;">G5.1</div>
-        <div class="finished-box" style="top: 40.2%; left: 35.5%; width: 2.1%; height: 14.8%;">G5.2</div>
-        <div class="finished-box" style="top: 40.2%; left: 37.6%; width: 2.1%; height: 14.8%;">G5.3</div>
-        <div class="finished-box" style="top: 40.2%; left: 39.7%; width: 2.1%; height: 14.8%;">G5.4</div>
-        <div class="finished-box" style="top: 40.2%; left: 41.8%; width: 2.1%; height: 14.8%;">G5.5</div>
+        <div class="finished-box" style="top: 40.2%; left: 33.4%; width: 2.1%; height: 14.8%;">14</div>
+        <div class="finished-box" style="top: 40.2%; left: 35.5%; width: 2.1%; height: 14.8%;">15</div>
+        <div class="finished-box" style="top: 40.2%; left: 37.6%; width: 2.1%; height: 14.8%;">16</div>
+        <div class="finished-box" style="top: 40.2%; left: 39.7%; width: 2.1%; height: 14.8%;">17</div>
+        <div class="finished-box" style="top: 40.2%; left: 41.8%; width: 2.1%; height: 14.8%;">18</div>
 
-        <div class="finished-box" style="top: 18.8%; left: 45.1%; width: 17.7%; height: 44.2%;">G6</div>
-        <div class="finished-box" style="top: 18.8%; left: 63.7%; width: 17.7%; height: 44.2%;">G7</div>
-        <div class="finished-box" style="top: 50%; left: 52%; width: 5%; height: 10%;">G8</div>
-        <div class="finished-box" style="top: 67%; left: 45.5%; width: 7%; height: 13%;">G9</div>
-        <div class="finished-box" style="top: 42%; left: 81%; width: 5%; height: 25%;">G10</div>
-        <div class="finished-box" style="top: 75%; left: 15%; width: 8%; height: 8%;">PWR_IN</div>
-        <div class="finished-box" style="top: 85%; left: 48%; width: 4%; height: 6%;">SCRW1</div>
-        <div class="finished-box" style="top: 5%; left: 78%; width: 3%; height: 5%;">ANT1</div>
+        <div class="finished-box" style="top: 18.8%; left: 45.1%; width: 17.7%; height: 44.2%;">19</div>
+        <div class="finished-box" style="top: 18.8%; left: 63.7%; width: 17.7%; height: 44.2%;">20</div>
+        <div class="finished-box" style="top: 50%; left: 52%; width: 5%; height: 10%;">21</div>
+        <div class="finished-box" style="top: 67%; left: 45.5%; width: 7%; height: 13%;">22</div>
+        <div class="finished-box" style="top: 42%; left: 81%; width: 5%; height: 25%;">23</div>
+        <div class="finished-box" style="top: 75%; left: 15%; width: 8%; height: 8%;">24</div>
+        <div class="finished-box" style="top: 85%; left: 48%; width: 4%; height: 6%;">25</div>
     </div>
 
     <script>
