@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Terminal Mapper</title>
+    <title>LTX-100 Individual Pin Mapper</title>
     <style>
         body { 
             background: #0f0f0f;
@@ -14,7 +14,7 @@
         }
 
         .header {
-            padding: 20px;
+            padding: 15px;
             background: #1a1a1a;
             width: 100%;
             display: flex;
@@ -46,13 +46,13 @@
         /* Component Box Styles */
         .terminal-box {
             position: absolute;
-            border: 1px solid #00ffff;
+            border: 0.5px solid #00ffff;
             background: rgba(0, 255, 255, 0.1);
-            display: none; /* Toggleable */
+            display: none; 
             align-items: center;
             justify-content: center;
             color: #00ffff;
-            font-size: 10px;
+            font-size: 8px;
             font-weight: bold;
             pointer-events: auto;
         }
@@ -64,7 +64,7 @@
 <body class="show-map">
 
     <div class="header">
-        <button onclick="document.body.classList.toggle('show-map')">Toggle Terminal Grid</button>
+        <button onclick="document.body.classList.toggle('show-map')">Toggle Pin Alignment</button>
     </div>
 
     <div class="board-container">
