@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Support Interface</title>
+    <title>LTX-100 Emulator - Grid Mapping</title>
     <style>
         body { 
             background-color: #121212; 
@@ -10,109 +10,104 @@
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            padding: 40px; 
+            padding: 20px; 
             margin: 0; 
             font-family: 'Segoe UI', sans-serif; 
         }
 
-        /* The Board Container */
+        .controls { margin-bottom: 20px; }
+
+        button {
+            padding: 10px 20px;
+            background: #00ffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #121212;
+        }
+
         .board-container { 
             position: relative; 
-            width: 1000px; /* Adjust this to scale the whole board */
+            width: 1000px; 
             box-shadow: 0 30px 100px rgba(0,0,0,0.8);
         }
 
-        .base-img { 
-            width: 100%; 
-            display: block; 
-        }
+        .base-img { width: 100%; display: block; }
 
-        /* DIGITAL PANEL OVERLAY */
-        .digital-overlay {
-            position: absolute;
-            top: 18.8%; /* Precisely over the 7-segment area */
-            left: 20.3%;
-            width: 13.2%;
-            height: 10.5%;
-            background: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 2px;
-            box-shadow: inset 0 0 10px #000;
-        }
-
-        .led-digits {
-            color: #ff3333;
-            font-family: monospace;
-            font-size: 48px;
-            font-weight: bold;
-            text-shadow: 0 0 12px #ff0000;
-            letter-spacing: 4px;
-        }
-
-        /* INSTRUCTION LABELS */
-        .callout {
-            position: absolute;
-            background: rgba(0, 255, 255, 0.15);
-            border: 1px solid rgba(0, 255, 255, 0.6);
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #00ffff;
-            text-shadow: 0 0 5px #000;
-            pointer-events: auto;
-            transition: transform 0.2s;
-        }
-
-        .callout:hover {
-            transform: scale(1.05);
-            background: rgba(0, 255, 255, 0.3);
-        }
-
-        /* WIRE OVERLAY (SVG layer) */
-        .wire-layer {
+        /* The Grid Overlay */
+        #grid-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            pointer-events: none; /* Allows you to click through the grid */
+            display: none; /* Hidden by default */
         }
+
+        .grid-line { stroke: #00ffff; stroke-width: 0.25; opacity: 0.6; }
+        .grid-text { fill: #00ffff; font-size: 8px; opacity: 0.8; }
+
+        /* Existing Overlays */
+        .digital-overlay {
+            position: absolute;
+            top: 18.8%; left: 20.3%; width: 13.2%; height: 10.5%;
+            background: #0a0a0a; display: flex; justify-content: center; align-items: center;
+        }
+        .led-digits { color: #ff3333; font-family: monospace; font-size: 48px; text-shadow: 0 0 12px #ff0000; }
     </style>
 </head>
 <body>
 
-    <h2 style="margin-bottom: 30px; color: #aaa;">LTX-100 Wiring & Configuration</h2>
+    <div class="controls">
+        <button onclick="toggleGrid()">Toggle Alignment Grid</button>
+    </div>
 
     <div class="board-container">
-        <img src="ltx-100-base.png" alt="LTX-100 Hardware" class="base-img">
+        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
 
         <div class="digital-overlay">
-            <div class="led-digits" id="main-display">888</div>
+            <div class="led-digits">888</div>
         </div>
 
-        <div class="callout" style="top: 80%; left: 10%;">
-            &larr; 24V DC POWER INPUT
-        </div>
+        <svg id="grid-layer" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" class="grid-line"/>
+                </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#grid)" />
+            
+            <g id="grid-numbers">
+                <text x="10" y="3" class="grid-text">10%</text>
+                <text x="20" y="3" class="grid-text">20%</text>
+                <text x="30" y="3" class="grid-text">30%</text>
+                <text x="40" y="3" class="grid-text">40%</text>
+                <text x="50" y="3" class="grid-text">50%</text>
+                <text x="60" y="3" class="grid-text">60%</text>
+                <text x="70" y="3" class="grid-text">70%</text>
+                <text x="80" y="3" class="grid-text">80%</text>
+                <text x="90" y="3" class="grid-text">90%</text>
 
-        <div class="callout" style="top: 61%; left: 24.5%;">
-            &uarr; RS-485 1 (B- / A+)
-        </div>
-
-        <div class="callout" style="top: 52%; left: 51%;">
-            &uarr; SIM SLOT (4G/LTE)
-        </div>
-
-        <svg class="wire-layer" viewBox="0 0 1000 500">
-            </svg>
+                <text x="1" y="10" class="grid-text">10%</text>
+                <text x="1" y="20" class="grid-text">20%</text>
+                <text x="1" y="30" class="grid-text">30%</text>
+                <text x="1" y="40" class="grid-text">40%</text>
+                <text x="1" y="50" class="grid-text">50%</text>
+                <text x="1" y="60" class="grid-text">60%</text>
+                <text x="1" y="70" class="grid-text">70%</text>
+                <text x="1" y="80" class="grid-text">80%</text>
+                <text x="1" y="90" class="grid-text">90%</text>
+            </g>
+        </svg>
     </div>
 
     <script>
-        // Simple logic to simulate the display booting up
-        setTimeout(() => {
-            document.getElementById('main-display').innerText = '1.0.0';
-        }, 1500);
+        function toggleGrid() {
+            const grid = document.getElementById('grid-layer');
+            grid.style.display = (grid.style.display === 'none' || grid.style.display === '') ? 'block' : 'none';
+        }
     </script>
 
 </body>
