@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LTX-100 Persistent Interface</title>
+    <title>LTX-100 Interface</title>
     <style>
         body { 
             background: #0f0f0f; color: #00ffff;
@@ -12,7 +12,7 @@
 
         .header {
             padding: 15px; background: #1a1a1a; width: 100%;
-            display: flex; justify-content: center; gap: 15px; align-items: center;
+            display: flex; justify-content: center;
             border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000;
         }
 
@@ -21,147 +21,45 @@
             user-select: none;
         }
 
-        .mode-edit .board-container { cursor: crosshair; }
-        .mode-locked .board-container { cursor: default; }
-
         .base-img { width: 100%; display: block; pointer-events: none; }
-
-        #active-box {
-            position: absolute; border: 1.5px solid #00ffff;
-            background: rgba(0, 255, 255, 0.2); pointer-events: none; display: none;
-        }
 
         .finished-box {
             position: absolute; border: 1px solid #00ffff;
             background: rgba(0, 255, 255, 0.05); color: #00ffff;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 10px; font-weight: bold; transition: opacity 0.3s ease, background 0.2s;
-            opacity: 1;
+            font-size: 10px; font-weight: bold;
+            visibility: hidden; /* Hidden by default */
         }
 
-        /* Visibility Toggle Class */
-        .hide-boxes .finished-box {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .mode-locked .finished-box:hover {
-            background: rgba(0, 255, 255, 0.2);
-            border-width: 2px;
+        /* Toggle State */
+        .show-grid .finished-box {
+            visibility: visible;
         }
 
         button {
-            padding: 8px 15px; border: none; cursor: pointer; font-weight: bold; border-radius: 3px;
-            text-transform: uppercase;
+            padding: 10px 20px; background: #00ffff; border: none; 
+            cursor: pointer; font-weight: bold; border-radius: 3px;
+            text-transform: uppercase; color: #1a1a1a;
         }
 
-        .btn-edit { background: #f39c12; color: white; }
-        .btn-save { background: #27ae60; color: white; }
-        .btn-toggle { background: #3498db; color: white; }
-        .btn-danger { background: #c0392b; color: white; }
-        
-        #status-indicator { font-size: 12px; margin-left: 20px; }
+        button:hover { background: #00cccc; }
     </style>
 </head>
-<body class="mode-locked">
+<body>
 
     <div class="header">
-        <button id="editBtn" class="btn-edit" onclick="toggleMode()">Edit Layout</button>
-        <button class="btn-toggle" onclick="toggleVisibility()">Toggle Boxes On/Off</button>
-        <button class="btn-danger" onclick="clearAll()">Clear All</button>
-        <span id="status-indicator">STATUS: LOCKED</span>
+        <button onclick="document.body.classList.toggle('show-grid')">Show Grid</button>
     </div>
 
     <div class="board-container" id="canvas">
-        <img src="ltx-100-base.png" class="base-img">
-        <div id="active-box"></div>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('canvas');
-        const activeBox = document.getElementById('active-box');
-        const status = document.getElementById('status-indicator');
-        const editBtn = document.getElementById('editBtn');
+        <img src="ltx-100-base.png" alt="LTX-100" class="base-img">
         
-        let isEditing = false;
-        let startX, startY, isDrawing = false;
+        <div class="finished-box" style="top: 18.8%; left: 20.1%; width: 13.2%; height: 10.5%;">G1</div>
+        <div class="finished-box" style="top: 18.8%; left: 34.8%; width: 10.8%; height: 10.5%;">G2</div>
+        <div class="finished-box" style="top: 40.2%; left: 12.3%; width: 2.7%; height: 14.8%;">G3.1</div>
+        <div class="finished-box" style="top: 40.2%; left: 15.0%; width: 2.7%; height: 14.8%;">G3.2</div>
+        <div class="finished-box" style="top: 40.2%; left: 17.7%; width: 2.7%; height: 14.8%;">G3.3</div>
+        </div>
 
-        window.onload = loadBoxes;
-
-        function toggleVisibility() {
-            canvas.classList.toggle('hide-boxes');
-        }
-
-        function toggleMode() {
-            isEditing = !isEditing;
-            document.body.className = isEditing ? "mode-edit" : "mode-locked";
-            status.innerText = isEditing ? "STATUS: EDITING" : "STATUS: LOCKED";
-            editBtn.innerText = isEditing ? "Finish & Lock" : "Edit Layout";
-            editBtn.className = isEditing ? "btn-save" : "btn-edit";
-            
-            // Auto-show boxes if entering edit mode
-            if (isEditing) canvas.classList.remove('hide-boxes');
-        }
-
-        canvas.addEventListener('mousedown', e => {
-            if (!isEditing) return;
-            isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
-            startX = ((e.clientX - rect.left) / rect.width) * 100;
-            startY = ((e.clientY - rect.top) / rect.height) * 100;
-            activeBox.style.display = 'block';
-        });
-
-        canvas.addEventListener('mousemove', e => {
-            if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            let currentX = ((e.clientX - rect.left) / rect.width) * 100;
-            let currentY = ((e.clientY - rect.top) / rect.height) * 100;
-
-            activeBox.style.width = Math.abs(currentX - startX) + '%';
-            activeBox.style.height = Math.abs(currentY - startY) + '%';
-            activeBox.style.left = (currentX < startX ? currentX : startX) + '%';
-            activeBox.style.top = (currentY < startY ? currentY : startY) + '%';
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (!isDrawing) return;
-            isDrawing = false;
-            activeBox.style.display = 'none';
-
-            let gId = prompt("Enter Terminal ID (e.g. 1, 3.1):");
-            if (gId) createBox(activeBox.style.left, activeBox.style.top, activeBox.style.width, activeBox.style.height, "G" + gId, true);
-        });
-
-        function createBox(l, t, w, h, id, shouldSave) {
-            const box = document.createElement('div');
-            box.className = 'finished-box';
-            box.style.left = l; box.style.top = t;
-            box.style.width = w; box.style.height = h;
-            box.innerText = id;
-            canvas.appendChild(box);
-            if (shouldSave) saveBoxes();
-        }
-
-        function saveBoxes() {
-            const boxes = [];
-            document.querySelectorAll('.finished-box').forEach(b => {
-                boxes.push({ l: b.style.left, t: b.style.top, w: b.style.width, h: b.style.height, id: b.innerText });
-            });
-            localStorage.setItem('ltx100_boxes', JSON.stringify(boxes));
-        }
-
-        function loadBoxes() {
-            const saved = JSON.parse(localStorage.getItem('ltx100_boxes') || "[]");
-            saved.forEach(b => createBox(b.l, b.t, b.w, b.h, b.id, false));
-        }
-
-        function clearAll() {
-            if(confirm("Permanently delete all saved boxes?")) {
-                localStorage.removeItem('ltx100_boxes');
-                location.reload();
-            }
-        }
-    </script>
 </body>
 </html>
